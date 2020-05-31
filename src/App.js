@@ -1,7 +1,6 @@
 import React from 'react';
 import DeckGL from '@deck.gl/react';
 import { LineLayer } from '@deck.gl/layers';
-import { FirstPersonView, MapView } from '@deck.gl/core';
 import { StaticMap } from 'react-map-gl';
 
 // Set your mapbox access token here
@@ -19,18 +18,16 @@ const initialViewState = {
 // Data to be used by the LineLayer
 const data = [{ sourcePosition: [4.47917, 51.9225], targetPosition: [4.67361, 51.81] }];
 
-class App extends React.Component {
-  render() {
-    const layers = [
-      new LineLayer({ id: 'line-layer', data })
-    ];
+const App = () => {
+  const layers = [
+    new LineLayer({ id: 'line-layer', data })
+  ];
 
-    return (
-      <DeckGL initialViewState={initialViewState} layers={layers}>
-        <StaticMap mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN} />
-      </DeckGL>
-    );
-  }
+  return (
+    <DeckGL initialViewState={initialViewState} layers={layers}>
+      <StaticMap mapboxApiAccessToken={MAPBOX_ACCESS_TOKEN} />
+    </DeckGL>
+  );
 }
 
 export default App;
