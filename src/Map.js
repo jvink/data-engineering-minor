@@ -8,6 +8,7 @@ import 'mapbox-gl/dist/mapbox-gl.css';
 import './index.css';
 
 const Map = () => {
+  const [currentBuilding, setCurrentBuilding] = useState(null);
   const [viewport, setViewport] = useState({
     latitude: 51.917156,
     longitude: 4.483860,
@@ -33,10 +34,14 @@ const Map = () => {
     getFillColor: [255, 0, 0],
     material,
     onHover: (e) => {
-      console.log(e)
+      if (e.object) {
+        if (e.object !== currentBuilding) {
+          setCurrentBuilding(e.object);
+        }
+      }
     }
   });
-
+  console.log(currentBuilding);
   return (
     <>
       <MapGL
@@ -48,6 +53,13 @@ const Map = () => {
       >
         <CustomLayer layer={otherDeckLayer} />
       </MapGL>
+      {currentBuilding && (
+        <div style={{ position: 'absolute', right: 0, bottom: 20, backgroundColor: '#FFF', padding: '1rem', display: 'flex', flexDirection: 'column' }}>
+          <span>Building</span>
+          <span>Name: {currentBuilding.name}</span>
+          <span>Hoogte: {currentBuilding.height}m</span>
+        </div>
+      )}
     </>
   );
 }
