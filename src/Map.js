@@ -9,9 +9,9 @@ import './index.css';
 
 const Map = () => {
   const [viewport, setViewport] = useState({
-    latitude: 52.1,
-    longitude: 7,
-    zoom: 7
+    latitude: 51.917156,
+    longitude: 4.483860,
+    zoom: 12
   });
   const material = {
     ambient: 0.1,
