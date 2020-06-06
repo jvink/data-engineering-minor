@@ -1,13 +1,14 @@
 import React, { useState } from 'react';
 import MapGL, { CustomLayer } from '@urbica/react-map-gl';
 import { MapboxLayer } from '@deck.gl/mapbox';
-import { ArcLayer, PolygonLayer } from '@deck.gl/layers';
+import { PolygonLayer } from '@deck.gl/layers';
 
 import buildings from './buildings.json';
 import 'mapbox-gl/dist/mapbox-gl.css';
 import './index.css';
 
 const Map = () => {
+  const [currentBuilding, setCurrentBuilding] = useState(null);
   const [viewport, setViewport] = useState({
     latitude: 51.917156,
     longitude: 4.483860,
@@ -20,42 +21,46 @@ const Map = () => {
     specularColor: [60, 64, 70]
   };
 
-  const myDeckLayer = new MapboxLayer({
-    id: 'deckgl-arc',
-    type: ArcLayer,
-    data: [
-      { source: [4, 52], target: [3, 50] }
-    ],
-    getSourcePosition: (d) => d.source,
-    getTargetPosition: (d) => d.target,
-    getSourceColor: [255, 208, 0],
-    getTargetColor: [0, 128, 255],
-    getWidth: 12
-  });
   const otherDeckLayer = new MapboxLayer({
     id: 'buildings',
     type: PolygonLayer,
     data: buildings,
     extruded: true,
+    pickable: true,
     wireframe: false,
     opacity: 1,
     getPolygon: f => f.polygon,
     getElevation: f => f.height,
-    getFillColor: '#ede4ad',
+    getFillColor: [255, 0, 0],
     material,
+    onHover: (e) => {
+      if (e.object) {
+        if (e.object !== currentBuilding) {
+          setCurrentBuilding(e.object);
+        }
+      }
+    }
   });
-
+  console.log(currentBuilding);
   return (
-    <MapGL
-      style={{ width: '100%', height: '100vh' }}
-      mapStyle='mapbox://styles/mapbox/light-v9'
-      accessToken='pk.eyJ1IjoianVyY3VyciIsImEiOiJjazZobWR5Z20xYnhxM2tudm9wZHp5c2F5In0.no8NkOtrrEu_SgwFdKr41Q'
-      onViewportChange={setViewport}
-      {...viewport}
-    >
-      <CustomLayer layer={myDeckLayer} />
-      <CustomLayer layer={otherDeckLayer} />
-    </MapGL>
+    <>
+      <MapGL
+        style={{ width: '100%', height: '100vh' }}
+        mapStyle='mapbox://styles/mapbox/light-v9'
+        accessToken='pk.eyJ1IjoianVyY3VyciIsImEiOiJjazZobWR5Z20xYnhxM2tudm9wZHp5c2F5In0.no8NkOtrrEu_SgwFdKr41Q'
+        onViewportChange={setViewport}
+        {...viewport}
+      >
+        <CustomLayer layer={otherDeckLayer} />
+      </MapGL>
+      {currentBuilding && (
+        <div style={{ position: 'absolute', right: 0, bottom: 20, backgroundColor: '#FFF', padding: '1rem', display: 'flex', flexDirection: 'column' }}>
+          <span>Building</span>
+          <span>Name: {currentBuilding.name}</span>
+          <span>Hoogte: {currentBuilding.height}m</span>
+        </div>
+      )}
+    </>
   );
 }
 
