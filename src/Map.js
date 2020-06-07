@@ -41,7 +41,7 @@ const Map = () => {
       }
     }
   });
-  console.log(currentBuilding);
+
   return (
     <>
       <MapGL
